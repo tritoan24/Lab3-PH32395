@@ -2,6 +2,7 @@ const express = require('express');
 const port = 3000;
 const app = express();
 
+
 const mongoose = require('mongoose');
 const uri = 'mongodb+srv://TriToan:bcuJtxHeJc5FXJtR@atlascluster.felyrjm.mongodb.net/QLSV';
 
@@ -29,10 +30,12 @@ app.get('/', async (req, res) => {
     <div class="container">
         <h1 class="mt-5">Danh sách sinh viên</h1>
         <div class="row mt-3 mb-3">
-            <div class="col">
+        <div class="row mt-3 mb-3">
+            <div class="row mt -3 mb-3">
                 <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addStudentModal">
                     Thêm sinh viên
                 </button>
+            </div>
             </div>
         </div>
         <!-- Bảng danh sách sinh viên -->
@@ -364,6 +367,46 @@ app.put('/students/:id', async (req, res) => {
         res.status(400).send(error.message);
     }
 });
+
+app.get('/getagestudent', async (req, res) => {
+    try {
+        const { age_start, age_end } = req.query;
+        const query = { age: { $gte: age_start, $lte: age_end } };
+        const data = await svModel.find(query, 'name age id_distributor')
+            .populate('id_distributor')
+            .sort({ age: 1 })
+            .limit(10);
+
+        res.json({
+            "status": "success",
+            "message": "Get age student successfully",
+            "data": data
+        });
+    } catch (error) {
+        console.error(error);
+    }
+});
+
+app.get('/getnamestudent', async (req, res) => {    
+    try {
+        const query = {$or: [
+            {name: {$regex:'T'}},
+            {name: {$regex:'o'}},
+        ]}
+        const data = await svModel.find(query, 'name age id_distributor msv status')
+            .populate('id_distributor')
+
+
+        res.json({
+            "status": "success",
+            "message": "Get name student successfully",
+            "data": data
+        });
+    } catch (error) {
+        console.error(error);
+    }
+});
+
 
 
 

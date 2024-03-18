@@ -17,6 +17,11 @@ const StudentSchema = mongoose.Schema({
     },
     image:{
         type: String
+    },
+    id_distributor: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'distributor'
+    
     }
 });
 
